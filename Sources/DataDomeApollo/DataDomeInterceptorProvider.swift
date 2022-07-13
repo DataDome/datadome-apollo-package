@@ -42,7 +42,7 @@ public class DataDomeInterceptorProvider: InterceptorProvider {
             interceptors.append(contentsOf: preFetchInterceptors)
         } else {
             interceptors.append(contentsOf: [
-                LegacyCacheReadInterceptor(store: self.store)
+                CacheReadInterceptor(store: self.store)
             ] as [ApolloInterceptor])
         }
         
@@ -63,9 +63,9 @@ public class DataDomeInterceptorProvider: InterceptorProvider {
         } else {
             interceptors.append(contentsOf: [
                 ResponseCodeInterceptor(),
-                LegacyParsingInterceptor(cacheKeyForObject: self.store.cacheKeyForObject),
+                JSONResponseParsingInterceptor(cacheKeyForObject: self.store.cacheKeyForObject),
                 AutomaticPersistedQueryInterceptor(),
-                LegacyCacheWriteInterceptor(store: self.store)
+                CacheWriteInterceptor(store: self.store)
             ] as [ApolloInterceptor])
         }
         

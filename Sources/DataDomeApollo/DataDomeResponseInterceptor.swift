@@ -9,7 +9,10 @@ import Apollo
 import DataDomeSDK
 
 /// The DataDome interceptor. Use this to get your networking pipeline protected.
-class DataDomeResponseInterceptor: ApolloInterceptor {
+public class DataDomeResponseInterceptor: ApolloInterceptor {
+    
+    /// Expose the initializer publicly
+    public init() {}
     
     /// This method is triggered when the DataDome interceptor is hit in the pipeline
     /// - Parameters:
@@ -17,7 +20,7 @@ class DataDomeResponseInterceptor: ApolloInterceptor {
     ///   - request: The original request
     ///   - response: The response
     ///   - completion: The completion handler
-    func interceptAsync<Operation: GraphQLOperation>(
+    public final func interceptAsync<Operation: GraphQLOperation>(
         chain: RequestChain,
         request: HTTPRequest<Operation>,
         response: HTTPResponse<Operation>?,
