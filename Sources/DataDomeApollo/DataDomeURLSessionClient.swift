@@ -6,6 +6,7 @@
 //
 
 import Apollo
+import Foundation
 
 /// An URLSessionClient with specific DataDome setup
 public class DataDomeURLSessionClient: URLSessionClient {
