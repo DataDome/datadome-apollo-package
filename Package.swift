@@ -17,7 +17,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios", from: "0.19.1"),
+        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios", from: "1.0.0"),
         .package(name: "DataDomeSDK", url: "https://github.com/DataDome/datadome-ios-package", from: "2.7.0")
     ],
     targets: [
@@ -25,7 +25,11 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "DataDomeApollo",
-            dependencies: ["Apollo", "DataDomeSDK"],
+            dependencies: [
+                .product(name: "Apollo", package: "Apollo"),
+                .product(name: "ApolloAPI", package: "Apollo"),
+                .product(name: "DataDomeSDK", package: "DataDomeSDK")
+            ],
             path: "Sources"
         )
     ],

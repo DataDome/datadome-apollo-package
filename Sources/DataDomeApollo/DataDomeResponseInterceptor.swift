@@ -6,6 +6,7 @@
 //
 
 import Apollo
+import ApolloAPI
 import DataDomeSDK
 
 /// The DataDome interceptor. Use this to get your networking pipeline protected.
