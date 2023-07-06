@@ -17,7 +17,8 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios", from: "1.0.7"),
+        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios", ("1.0.7"..<"1.1.0")),
+//        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios", from: "1.0.7"),
         .package(name: "DataDomeSDK", url: "https://github.com/DataDome/datadome-ios-package", from: "3.1.0")
     ],
     targets: [
