@@ -7,6 +7,7 @@
 //
 
 import Apollo
+import ApolloAPI
 
 /// A representation of the completion handler of a request
 public class ApolloCompletion<Operation: GraphQLOperation> {
