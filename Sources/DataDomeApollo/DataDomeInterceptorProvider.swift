@@ -7,6 +7,7 @@
 
 import Foundation
 import Apollo
+import ApolloAPI
 
 public class DataDomeInterceptorProvider: InterceptorProvider {
     
@@ -63,7 +64,7 @@ public class DataDomeInterceptorProvider: InterceptorProvider {
         } else {
             interceptors.append(contentsOf: [
                 ResponseCodeInterceptor(),
-                JSONResponseParsingInterceptor(cacheKeyForObject: self.store.cacheKeyForObject),
+                JSONResponseParsingInterceptor(),
                 AutomaticPersistedQueryInterceptor(),
                 CacheWriteInterceptor(store: self.store)
             ] as [ApolloInterceptor])
