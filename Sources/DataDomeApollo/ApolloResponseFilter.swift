@@ -7,7 +7,6 @@
 
 import DataDomeSDK
 import Apollo
-import ApolloAPI
 
 /// This class handles the validation of each intercepted request.
 internal final class ApolloResponseFilter<Operation: GraphQLOperation> {
