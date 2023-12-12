@@ -7,6 +7,9 @@
 //
 
 import Apollo
+#if !COCOAPODS
+import ApolloAPI
+#endif
 
 /// A representation of the completion handler of a request
 public class ApolloCompletion<Operation: GraphQLOperation> {

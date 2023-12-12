@@ -5,7 +5,12 @@
 //  Created by Mohamed Hajlaoui on 31/03/2021.
 //
 
+import Foundation
+
 import Apollo
+#if !COCOAPODS
+import ApolloAPI
+#endif
 
 /// An URLSessionClient with specific DataDome setup
 public class DataDomeURLSessionClient: URLSessionClient {
@@ -14,10 +19,9 @@ public class DataDomeURLSessionClient: URLSessionClient {
         if let header = ProcessInfo().environment["DATADOME_USER_AGENT"] {
             if var headers = config.httpAdditionalHeaders {
                 headers["User-Agent"] = header
-                headers["Accept"] = "application/json"
                 config.httpAdditionalHeaders = headers
             } else {
-                config.httpAdditionalHeaders = ["User-Agent": header, "Accept": "application/json"]
+                config.httpAdditionalHeaders = ["User-Agent": header]
             }
         }
         

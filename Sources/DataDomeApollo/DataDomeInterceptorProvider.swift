@@ -7,21 +7,9 @@
 
 import Foundation
 import Apollo
-import DataDomeSDK
-
-class PreFetchDatadomeInterceptor: ApolloInterceptor {
-    func interceptAsync<Operation>(chain: Apollo.RequestChain, 
-                                   request: Apollo.HTTPRequest<Operation>,
-                                   response: Apollo.HTTPResponse<Operation>?,
-                                   completion: @escaping (Result<Apollo.GraphQLResult<Operation.Data>, Error>) -> Void) where Operation : Apollo.GraphQLOperation {
-        if DataDomeSDK.cookieStorageMode == .internal,
-           let ddCookie = DataDomeSDK.getCookie() {
-            request.addHeader(name: "Cookie", value: "datadome=\(ddCookie.value)")
-        }
-        
-        chain.proceedAsync(request: request, response: response, completion: completion)
-    }
-}
+#if !COCOAPODS
+import ApolloAPI
+#endif
 
 public class DataDomeInterceptorProvider: InterceptorProvider {
     
@@ -50,10 +38,6 @@ public class DataDomeInterceptorProvider: InterceptorProvider {
         self.store = store
         self.client = client
         
-        if DataDomeSDK.cookieStorageMode == .internal {
-            self.client.session.configuration.httpShouldSetCookies = false
-        }
-        
         var interceptors = [ApolloInterceptor]()
         
         // Pre-fetch interceptors
@@ -64,8 +48,6 @@ public class DataDomeInterceptorProvider: InterceptorProvider {
                 CacheReadInterceptor(store: self.store)
             ] as [ApolloInterceptor])
         }
-        
-        interceptors.append(PreFetchDatadomeInterceptor())
         
         // Fetch interceptor
         if let fetchInterceptor = fetchInterceptor {
