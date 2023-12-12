@@ -7,7 +7,9 @@
 
 import Foundation
 import Apollo
+#if !COCOAPODS
 import ApolloAPI
+#endif
 
 public class DataDomeInterceptorProvider: InterceptorProvider {
     

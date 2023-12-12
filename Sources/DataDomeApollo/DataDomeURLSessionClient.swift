@@ -5,8 +5,12 @@
 //  Created by Mohamed Hajlaoui on 31/03/2021.
 //
 
-import Apollo
 import Foundation
+
+import Apollo
+#if !COCOAPODS
+import ApolloAPI
+#endif
 
 /// An URLSessionClient with specific DataDome setup
 public class DataDomeURLSessionClient: URLSessionClient {
