@@ -1,0 +1,5 @@
+query LaunchList {
+    me {
+        id
+    }
+}
