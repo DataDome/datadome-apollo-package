@@ -43,6 +43,7 @@ public class DataDomeResponseInterceptor: ApolloInterceptor {
                                           ignore: { (chain, request, response, completion) in
                                             chain.proceedAsync(request: request,
                                                                response: response,
+                                                               interceptor: self,
                                                                completion: completion)
                                           },
                                           retry: { (chain, request, _, completion) in

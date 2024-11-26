@@ -64,7 +64,7 @@ extension ApolloResponseFilter: ResponseValidatorDelegate {
     }
 }
 
-extension HTTPRequest: Requestable {
+extension HTTPRequest: @retroactive Requestable {
     public var url: URL? {
         graphQLEndpoint
     }
