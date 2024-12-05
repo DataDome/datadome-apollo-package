@@ -1,0 +1,33 @@
+{
+  "schemaNamespace" : "ApolloSchema",
+  "options": {
+      "cocoapodsCompatibleImportStatements" : true
+  },
+  "input" : {
+    "operationSearchPaths" : [
+      "**/*.graphql"
+    ],
+    "schemaSearchPaths" : [
+      "**/*.graphqls",
+      "GraphQL/*.json"
+    ]
+  },
+  "output" : {
+    "testMocks" : {
+      "none" : {
+      }
+    },
+    "schemaTypes" : {
+      "path" : "./ExampleSchema",
+      "moduleType" : {
+        "embeddedInTarget" : {
+          "name" : "Example"
+        }
+      }
+    },
+    "operations" : {
+      "inSchemaModule" : {
+      }
+    }
+  }
+}

@@ -13,7 +13,7 @@ import ApolloAPI
 #endif
 
 /// An URLSessionClient with specific DataDome setup
-public class DataDomeURLSessionClient: URLSessionClient {
+public final class DataDomeURLSessionClient: URLSessionClient {
     public init() {
         let config = URLSessionConfiguration.default
         if let header = ProcessInfo().environment["DATADOME_USER_AGENT"] {
