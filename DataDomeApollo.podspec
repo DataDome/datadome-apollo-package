@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name     = "DataDomeApollo"
-  spec.version  = "3.6.2-beta.0"
+  spec.version  = "3.6.2"
   spec.summary  = "A DataDome plugin for Apollo integration."
   spec.homepage = "https://datadome.co"
   spec.license  = { :type => 'MIT', :file => 'LICENSE' }
