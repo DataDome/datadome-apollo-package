@@ -9,6 +9,7 @@ import Foundation
 
 import Apollo
 import DataDomeApollo
+import DataDomeSDK
 
 final class NetworkManager {
     enum Error: Swift.Error {
@@ -48,15 +49,15 @@ final class NetworkManager {
         
         // Create the client with the request chain transport
         return ApolloClient(networkTransport: requestChainTransport,
-                            store: store)
+                            store: store)   
     }()
         
     private init() {
         
     }
     
-    func protectedData(from url: URL, withId id: Int) async throws -> Data {
-        apollo.fetch(query: ApolloSchema.LaunchListQuery()) { result in
+    func protectedData(from url: URL, withId id: Int, captchaDelegate: CaptchaDelegate? = nil) async throws -> Data {
+        apollo.fetch(query: ApolloSchema.LaunchListQuery(), context: ProtectedRequestContext(responsePageDelegate: captchaDelegate)) { result in
             
         }
         

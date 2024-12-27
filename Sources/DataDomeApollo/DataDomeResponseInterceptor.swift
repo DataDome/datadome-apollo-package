@@ -29,27 +29,31 @@ public class DataDomeResponseInterceptor: ApolloInterceptor {
         request: HTTPRequest<Operation>,
         response: HTTPResponse<Operation>?,
         completion: @escaping (Result<GraphQLResult<Operation.Data>, Error>) -> Void) {
-        
-        
-        // Validate the underline networking layer wrapped by Apollo
-        let prototype = ApolloCompletion(
-            chain: chain,
-            request: request,
-            response: response,
-            completion: completion
-        )
-        
-        let filter = ApolloResponseFilter(completion: prototype,
-                                          ignore: { (chain, request, response, completion) in
-                                            chain.proceedAsync(request: request,
-                                                               response: response,
-                                                               interceptor: self,
-                                                               completion: completion)
-                                          },
-                                          retry: { (chain, request, _, completion) in
-                                            chain.retry(request: request, completion: completion)
-                                          })
-        
-        filter.validate()
-    }
+            
+            
+            // Validate the underline networking layer wrapped by Apollo
+            let prototype = ApolloCompletion(
+                chain: chain,
+                request: request,
+                response: response,
+                completion: completion
+            )
+            
+            if let context = request.context as? ProtectedRequestContext, let responsePageDelegate = context.responsePageDelegate {
+                
+            }
+            
+            let filter = ApolloResponseFilter(completion: prototype,
+                                              ignore: { (chain, request, response, completion) in
+                chain.proceedAsync(request: request,
+                                   response: response,
+                                   interceptor: self,
+                                   completion: completion)
+            },
+                                              retry: { (chain, request, _, completion) in
+                chain.retry(request: request, completion: completion)
+            })
+            
+            filter.validate()
+        }
 }
