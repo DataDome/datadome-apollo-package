@@ -6,8 +6,30 @@
 //
 
 import SwiftUI
+import DataDomeSDK
+
+struct TestView: UIViewControllerRepresentable {
+    typealias UIViewControllerType = UIViewController
+    
+    var vc: UIViewControllerType
+    
+    init(vc: UIViewController) {
+        self.vc = vc
+    }
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        return vc
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        
+    }
+}
 
 final class ContentViewModel: ObservableObject {
+    @Published var presentCaptcha = false
+    @Published var captchaView: TestView? = nil
+    
     var networkManager: NetworkManager = .shared
     
     // TODO: Replace the example URL by the protected endpoint you want to test
@@ -27,13 +49,25 @@ final class ContentViewModel: ObservableObject {
     }
     
     func makeSingleCall(_ id: Int = 0) async {
-        _ = try? await networkManager.protectedData(from: endpoint, withId: id)
+        _ = try? await networkManager.protectedData(from: endpoint, withId: id, captchaDelegate: self)
     }
     
     func makeMuiltipleCalls(number: Int) async {
         for i in 1...number {
             await makeSingleCall(i)
         }
+    }
+}
+
+extension ContentViewModel: CaptchaDelegate {
+    func present(captchaController controller: UIViewController) {
+        captchaView = TestView(vc: controller)
+        presentCaptcha = true
+    }
+    
+    func dismiss(captchaController controller: UIViewController) {
+        presentCaptcha = false
+        captchaView = nil
     }
 }
 
@@ -91,6 +125,9 @@ struct ContentView: View {
                 vm.responsePageView = nil
             } content: {
                 vm.responsePageView
+            }
+            .fullScreenCover(isPresented: $vm.presentCaptcha) {
+                vm.captchaView
             }
         }
     }

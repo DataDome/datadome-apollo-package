@@ -60,7 +60,7 @@ final class NetworkManager {
         apollo.fetch(query: ApolloSchema.LaunchListQuery(), context: ProtectedRequestContext(responsePageDelegate: captchaDelegate)) { result in
             
         }
-        
+                
         return "lksjdfg".data(using: .utf8)!
     }
 }

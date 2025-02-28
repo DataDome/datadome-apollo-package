@@ -39,10 +39,8 @@ public class DataDomeResponseInterceptor: ApolloInterceptor {
                 completion: completion
             )
             
-            if let context = request.context as? ProtectedRequestContext, let responsePageDelegate = context.responsePageDelegate {
-                
-            }
-            
+            let responsePageDelegate = (request.context as? ProtectedRequestContext)?.responsePageDelegate
+                            
             let filter = ApolloResponseFilter(completion: prototype,
                                               ignore: { (chain, request, response, completion) in
                 chain.proceedAsync(request: request,
@@ -52,7 +50,7 @@ public class DataDomeResponseInterceptor: ApolloInterceptor {
             },
                                               retry: { (chain, request, _, completion) in
                 chain.retry(request: request, completion: completion)
-            })
+            }, responsePageDelegate: responsePageDelegate)
             
             filter.validate()
         }
