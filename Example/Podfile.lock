@@ -1,11 +1,11 @@
 PODS:
-  - Apollo (1.15.3):
-    - Apollo/Core (= 1.15.3)
-  - Apollo/Core (1.15.3)
-  - DataDomeApollo (3.6.2-beta.0):
+  - Apollo (1.18.0):
+    - Apollo/Core (= 1.18.0)
+  - Apollo/Core (1.18.0)
+  - DataDomeApollo (3.6.2):
     - Apollo (~> 1.0)
-    - DataDomeSDK (~> 3.6.2)
-  - DataDomeSDK (3.6.2)
+    - DataDomeSDK (= 3.7.0-alpha.0)
+  - DataDomeSDK (3.7.0-alpha.0)
 
 DEPENDENCIES:
   - DataDomeApollo (from `../`)
@@ -20,9 +20,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Apollo: a1e120e7ca2c8592056bd39e8032e2e3fed601a6
-  DataDomeApollo: 29a0ae52a7c4481d72d3b5ba36c13b4b92c17f2b
-  DataDomeSDK: 9b606c7d7b9eeb5f46b4cdfcfc1ddbbad017a936
+  Apollo: c2e665f8cbdcac012ab2d57f960b648f757f1e2b
+  DataDomeApollo: 173b29a27a63bab4522e95bff2c1cec547166be6
+  DataDomeSDK: d024dfb7597c9eab8c215d102a20e387106bf21c
 
 PODFILE CHECKSUM: e0b0d1fe7a6719325c473e1495655b8e8e8fd8e1
 

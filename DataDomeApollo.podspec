@@ -14,5 +14,5 @@ Pod::Spec.new do |spec|
   spec.source_files = "Sources/DataDomeApollo"
 
   spec.dependency "Apollo", "~> 1.0"
-  spec.dependency 'DataDomeSDK', "~> 3.6.2"
+  spec.dependency 'DataDomeSDK', "3.7.0-alpha.0"
 end

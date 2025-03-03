@@ -24,7 +24,7 @@ internal final class ApolloResponseFilter<Operation: GraphQLOperation> {
     /// A delegate conforming to the FilterDelegate protocol
     private var retry: ApolloClosure
     private var ignore: ApolloClosure
-
+    private var responsePageDelegate: CaptchaDelegate?
     
     /// Create a filter for a specified request
     /// - Parameters:
@@ -32,17 +32,20 @@ internal final class ApolloResponseFilter<Operation: GraphQLOperation> {
     ///   - delegate: The filter delegate responsible for actioning the filtering result
     required init(completion: ApolloCompletion<Operation>,
                   ignore: @escaping ApolloClosure,
-                  retry: @escaping ApolloClosure) {
+                  retry: @escaping ApolloClosure,
+                  responsePageDelegate: CaptchaDelegate?) {
         
         self.completion = completion
         self.retry = retry
         self.ignore = ignore
+        self.responsePageDelegate = responsePageDelegate
     }
     
     func validate() {
         let validator = ResponseValidator(request: completion.request,
                                           response: completion.response?.httpResponse,
-                                          data: completion.response?.rawData)
+                                          data: completion.response?.rawData,
+                                          responsePageDelegate: responsePageDelegate)
         
         validator.delegate = self
         validator.validate()
