@@ -15,7 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apollographql/apollo-ios", from: Version(1, 0, 0)),
-        .package(url: "https://github.com/DataDome/datadome-ios-package", from: Version(3, 7, 0))
+        .package(url: "https://github.com/DataDome/datadome-ios-package", from: Version(3, 8, 0))
     ],
     targets: [
         .target(
