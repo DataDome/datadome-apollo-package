@@ -11,8 +11,8 @@ import ApolloAPI
 import CoreDataDome
 
 /// The DataDome interceptor. Use this to get your networking pipeline protected.
-public class DataDomeResponseInterceptor: ApolloInterceptor {
-    public var id: String = UUID().uuidString
+public final class DataDomeResponseInterceptor: ApolloInterceptor {
+    public let id: String = UUID().uuidString
 
     /// The CoreDataDome SDK instance used to validate responses.
     private let dataDome: DataDome
@@ -22,20 +22,19 @@ public class DataDomeResponseInterceptor: ApolloInterceptor {
     public init(dataDome: DataDome) {
         self.dataDome = dataDome
     }
-    
+
     /// This method is triggered when the DataDome interceptor is hit in the pipeline
     /// - Parameters:
     ///   - chain: The apollo chain
     ///   - request: The original request
     ///   - response: The response
     ///   - completion: The completion handler
-    public final func interceptAsync<Operation: GraphQLOperation>(
+    public func interceptAsync<Operation: GraphQLOperation>(
         chain: RequestChain,
         request: HTTPRequest<Operation>,
         response: HTTPResponse<Operation>?,
         completion: @escaping (Result<GraphQLResult<Operation.Data>, Error>) -> Void) {
-            
-            
+
             // Validate the response intercepted from Apollo's networking layer through CoreDataDome.
             let httpResponse = response?.httpResponse
             let headers = httpResponse?.allHeaderFields.reduce(into: [String: String]()) { result, pair in
