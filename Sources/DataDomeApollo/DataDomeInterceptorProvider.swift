@@ -12,77 +12,43 @@ import CoreDataDome
 import ApolloAPI
 #endif
 
-public class DataDomeInterceptorProvider: InterceptorProvider {
+/// An `InterceptorProvider` that uses Apollo's default interceptor chain and inserts the DataDome
+/// response interceptor right after the network fetch.
+///
+/// Subclassing `DefaultInterceptorProvider` (rather than hand-building the chain) keeps the provider
+/// in lock-step with Apollo's default interceptors — including `MaxRetryInterceptor`,
+/// `MultipartResponseParsingInterceptor`, and the deferred-fragment-aware JSON parser — so it never
+/// drifts as Apollo evolves.
+public final class DataDomeInterceptorProvider: DefaultInterceptorProvider {
 
-    /// The apollo sotre
-    private let store: ApolloStore
+    /// The CoreDataDome SDK instance used to validate responses.
+    private let dataDome: DataDome
 
-    /// The Apollo URLSession client used by the network fetch interceptor.
-    private let client: URLSessionClient
-
-    /// The list of interceptors in the provider
-    private let interceptors: [ApolloInterceptor]
-
-    /// Creates an interceptor provider with a setup instance of DataDome
+    /// Creates an interceptor provider backed by a CoreDataDome SDK instance.
     /// - Parameters:
-    ///   - store: The apollo store
-    ///   - client: The URLSession client
-    ///   - dataDome: The CoreDataDome SDK instance used to validate responses
-    ///   - preFetchInterceptors: The list of interceptors to go before the fetch operation
-    ///   - fetchInterceptor: The fetch operation
-    ///   - postFetchInterceptors: The list of interceptors to go after the fetch operation
-    public init(store: ApolloStore,
-                client: URLSessionClient,
-                dataDome: DataDome,
-                preFetchInterceptors: [ApolloInterceptor] = [],
-                fetchInterceptor: ApolloInterceptor? = nil,
-                postFetchInterceptors: [ApolloInterceptor] = []) {
-
-        self.store = store
-        self.client = client
-        
-        var interceptors = [ApolloInterceptor]()
-        
-        // Pre-fetch interceptors
-        if !preFetchInterceptors.isEmpty {
-            interceptors.append(contentsOf: preFetchInterceptors)
-        } else {
-            interceptors.append(contentsOf: [
-                CacheReadInterceptor(store: self.store)
-            ] as [ApolloInterceptor])
-        }
-        
-        // Fetch interceptor
-        if let fetchInterceptor = fetchInterceptor {
-            interceptors.append(fetchInterceptor)
-        } else {
-            interceptors.append(NetworkFetchInterceptor(client: self.client))
-        }
-        
-        // Insert the DataDome response interceptor at the top of the chain
-        interceptors.append(DataDomeResponseInterceptor(dataDome: dataDome))
-        
-        
-        // Post fetch interceptors
-        if !postFetchInterceptors.isEmpty {
-            interceptors.append(contentsOf: postFetchInterceptors)
-        } else {
-            interceptors.append(contentsOf: [
-                ResponseCodeInterceptor(),
-                JSONResponseParsingInterceptor(),
-                AutomaticPersistedQueryInterceptor(),
-                CacheWriteInterceptor(store: self.store)
-            ] as [ApolloInterceptor])
-        }
-        
-        self.interceptors = interceptors
+    ///   - client: The `URLSessionClient` to use. Defaults to a fresh client.
+    ///   - store: The `ApolloStore` shared with your `ApolloClient`.
+    ///   - dataDome: The CoreDataDome SDK instance used to validate responses.
+    public init(client: URLSessionClient = URLSessionClient(),
+                store: ApolloStore,
+                dataDome: DataDome) {
+        self.dataDome = dataDome
+        super.init(client: client, store: store)
     }
-    
-    /// Provides the list of interceptors in order of execution in the pipeline.
-    /// - Parameter operation: The operation
-    /// - Returns: The list of interceptors for the provided operation
-    public func interceptors<Operation>(for operation: Operation)
-    -> [ApolloInterceptor] where Operation: GraphQLOperation {
-        interceptors
+
+    /// Provides Apollo's default interceptors with `DataDomeResponseInterceptor` inserted immediately
+    /// after `NetworkFetchInterceptor` (and before `ResponseCodeInterceptor`), so it inspects the raw
+    /// HTTP response — e.g. a DataDome challenge — before Apollo turns a non-2xx status into an error.
+    public override func interceptors<Operation: GraphQLOperation>(
+        for operation: Operation
+    ) -> [any ApolloInterceptor] {
+        var interceptors = super.interceptors(for: operation)
+        let ddInterceptor = DataDomeResponseInterceptor(dataDome: dataDome)
+        if let fetchIndex = interceptors.firstIndex(where: { $0 is NetworkFetchInterceptor }) {
+            interceptors.insert(ddInterceptor, at: interceptors.index(after: fetchIndex))
+        } else {
+            interceptors.append(ddInterceptor)
+        }
+        return interceptors
     }
 }

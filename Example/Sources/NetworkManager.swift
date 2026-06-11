@@ -33,11 +33,8 @@ final class NetworkManager {
         let cache = InMemoryNormalizedCache()
         let store = ApolloStore(cache: cache)
         
-        // Configure your session client
-        let client = URLSessionClient()
-        
         // Create the DataDome Interceptor Provider
-        let provider = DataDomeInterceptorProvider(store: store, client: client, dataDome: dataDome)
+        let provider = DataDomeInterceptorProvider(store: store, dataDome: dataDome)
         
         // Create your GraphQL URL
         let wpJsonEndpoint = "https://datadome.co/wp-json"
