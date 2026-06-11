@@ -7,34 +7,37 @@
 
 import Foundation
 import Apollo
+import CoreDataDome
 #if !COCOAPODS
 import ApolloAPI
 #endif
 
 public class DataDomeInterceptorProvider: InterceptorProvider {
-    
+
     /// The apollo sotre
     private let store: ApolloStore
-    
-    /// The url session client. Use DataDomeURLSessionClient
+
+    /// The Apollo URLSession client used by the network fetch interceptor.
     private let client: URLSessionClient
-    
+
     /// The list of interceptors in the provider
     private let interceptors: [ApolloInterceptor]
-    
+
     /// Creates an interceptor provider with a setup instance of DataDome
     /// - Parameters:
     ///   - store: The apollo store
     ///   - client: The URLSession client
+    ///   - dataDome: The CoreDataDome SDK instance used to validate responses
     ///   - preFetchInterceptors: The list of interceptors to go before the fetch operation
     ///   - fetchInterceptor: The fetch operation
     ///   - postFetchInterceptors: The list of interceptors to go after the fetch operation
     public init(store: ApolloStore,
                 client: URLSessionClient,
+                dataDome: DataDome,
                 preFetchInterceptors: [ApolloInterceptor] = [],
                 fetchInterceptor: ApolloInterceptor? = nil,
                 postFetchInterceptors: [ApolloInterceptor] = []) {
-        
+
         self.store = store
         self.client = client
         
@@ -57,7 +60,7 @@ public class DataDomeInterceptorProvider: InterceptorProvider {
         }
         
         // Insert the DataDome response interceptor at the top of the chain
-        interceptors.append(DataDomeResponseInterceptor())
+        interceptors.append(DataDomeResponseInterceptor(dataDome: dataDome))
         
         
         // Post fetch interceptors
