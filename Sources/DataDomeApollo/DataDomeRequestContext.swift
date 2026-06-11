@@ -5,6 +5,7 @@
 //  Created by Alexandre Brispot on 26/12/2024.
 //
 
+#if ApolloV1
 import CoreDataDome
 import Apollo
 import ApolloAPI
@@ -22,3 +23,4 @@ public class ProtectedRequestContext: DataDomeRequestContext {
 
     public var responsePageDelegate: (any DataDomeResponsePageDelegate)?
 }
+#endif

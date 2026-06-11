@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:6.1
 
 import PackageDescription
 
@@ -13,18 +13,28 @@ let package = Package(
             targets: ["DataDomeApollo"]
         ),
     ],
+    traits: [
+        "ApolloV1",
+        "ApolloV2",
+        // Default to Apollo iOS v1 so existing integrators need no change.
+        .default(enabledTraits: ["ApolloV1"]),
+    ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios", from: Version(1, 0, 0)),
-        .package(url: "git@github.com:DataDome/mobile-package-ios-coredatadome.git", from: Version(0, 6, 0))
+        // One apollo-ios identity spanning both majors. SwiftPM resolves a single version per build;
+        // enable the trait (ApolloV1 / ApolloV2) matching the Apollo major your app pins.
+        .package(url: "https://github.com/apollographql/apollo-ios", "1.0.0"..<"3.0.0"),
+        .package(url: "git@github.com:DataDome/mobile-package-ios-coredatadome.git", from: "0.6.0")
     ],
     targets: [
         .target(
             name: "DataDomeApollo",
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
-                .product(name: "CoreDataDome", package: "mobile-package-ios-coredatadome")],
+                .product(name: "ApolloAPI", package: "apollo-ios"),
+                .product(name: "CoreDataDome", package: "mobile-package-ios-coredatadome"),
+            ],
             path: "Sources"
         )
     ],
-    swiftLanguageVersions: [.v5]
+    swiftLanguageModes: [.v5]
 )

@@ -5,6 +5,7 @@
 //  Created by Mohamed Hajlaoui on 31/03/2021.
 //
 
+#if ApolloV1
 import Foundation
 import Apollo
 import ApolloAPI
@@ -50,3 +51,4 @@ public final class DataDomeInterceptorProvider: DefaultInterceptorProvider {
         return interceptors
     }
 }
+#endif
