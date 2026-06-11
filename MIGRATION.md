@@ -1,6 +1,6 @@
-# Migrating to DataDomeApollo 4.0.0 (CoreDataDome)
+# Migrating to DataDomeApollo 4.x (CoreDataDome)
 
-DataDomeApollo **4.0.0** replaces the legacy **DataDomeSDK** dependency with the new modular
+DataDomeApollo **4.x** replaces the legacy **DataDomeSDK** dependency with the new modular
 **CoreDataDome** SDK. This is a breaking release: response validation now runs through CoreDataDome's
 `DataDome` instance, and the challenge / blocked page is presented by the SDK itself. This guide
 covers upgrading an existing integration from 3.8.x or earlier.
@@ -8,11 +8,15 @@ covers upgrading an existing integration from 3.8.x or earlier.
 ## Requirements
 
 - **iOS 15.0+** (raised from iOS 12).
-- Swift Package Manager, Apollo iOS 1.x.
+- See the [README requirements](README.md#requirements) for the toolchain (Xcode version) and Swift
+  Package Manager setup.
+- DataDomeSDK integrations run on **Apollo iOS v1**, which is the default (`ApolloV1`) trait, so the
+  steps below apply as-is. To run on Apollo v2 instead, see
+  [Choosing your Apollo iOS major](README.md#choosing-your-apollo-ios-major-v1-or-v2).
 
 ## At a glance
 
-| Area | Before (≤ 3.8.x · DataDomeSDK) | After (4.0.0 · CoreDataDome) |
+| Area | Before (≤ 3.8.x · DataDomeSDK) | After (4.x · CoreDataDome) |
 |---|---|---|
 | Import | `import DataDomeSDK` | `import CoreDataDome` |
 | Client key (Info.plist) | `DataDomeKey` (String) | `DataDome` → `ClientSideKey` (String) |
@@ -24,7 +28,7 @@ covers upgrading an existing integration from 3.8.x or earlier.
 
 ## 1. Update the package & deployment target
 
-Bump DataDomeApollo to `4.0.0` and raise your app's minimum deployment target to **iOS 15.0**.
+Bump DataDomeApollo to the latest **4.x** and raise your app's minimum deployment target to **iOS 15.0**.
 
 ## 2. Move your client-side key in Info.plist
 
@@ -118,8 +122,10 @@ apollo.fetch(query: MyQuery()) { result in ... }
 > `DataDomeRequestContext` and `ProtectedRequestContext` still exist but are **deprecated no-ops**
 > kept only for source compatibility; remove them at your convenience.
 
-## 6. Remove other deleted symbols
+## 6. Remove or rename other symbols
 
+- **`DataDomeResponseInterceptor`** → renamed to **`DataDomeInterceptor`** (only relevant if you used the
+  interceptor type directly rather than via `DataDomeInterceptorProvider`).
 - **`ApolloCompletion`** — removed (was an internal helper exposed publicly).
 - **`EventTracker` / `.apollo` integration logging** — removed; there is no equivalent in CoreDataDome.
 
