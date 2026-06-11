@@ -23,7 +23,7 @@ let package = Package(
         // One apollo-ios identity spanning both majors. SwiftPM resolves a single version per build;
         // enable the trait (ApolloV1 / ApolloV2) matching the Apollo major your app pins.
         .package(url: "https://github.com/apollographql/apollo-ios", "1.0.0"..<"3.0.0"),
-        .package(url: "git@github.com:DataDome/mobile-package-ios-coredatadome.git", from: "0.6.0")
+        .package(url: "git@github.com:DataDome/mobile-package-ios-coredatadome.git", exact: "0.6.0")
     ],
     targets: [
         .target(
