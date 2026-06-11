@@ -7,9 +7,7 @@
 
 import CoreDataDome
 import Apollo
-#if !COCOAPODS
 import ApolloAPI
-#endif
 
 @available(*, deprecated, message: "Response-page presentation is handled internally by CoreDataDome; this context's delegate is ignored. This type is retained only for source compatibility and can be removed in a future release.")
 public protocol DataDomeRequestContext: RequestContext {

@@ -7,10 +7,8 @@
 
 import Foundation
 import Apollo
-import CoreDataDome
-#if !COCOAPODS
 import ApolloAPI
-#endif
+import CoreDataDome
 
 /// An `InterceptorProvider` that uses Apollo's default interceptor chain and inserts the DataDome
 /// response interceptor right after the network fetch.

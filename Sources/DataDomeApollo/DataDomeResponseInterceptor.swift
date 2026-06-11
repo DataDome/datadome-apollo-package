@@ -7,10 +7,8 @@
 
 import Foundation
 import Apollo
-import CoreDataDome
-#if !COCOAPODS
 import ApolloAPI
-#endif
+import CoreDataDome
 
 /// The DataDome interceptor. Use this to get your networking pipeline protected.
 public class DataDomeResponseInterceptor: ApolloInterceptor {
