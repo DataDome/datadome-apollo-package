@@ -4,14 +4,20 @@ Visit the [official documentation](https://docs.datadome.co/docs/sdk-ios-apollo)
 
 Upgrading from a DataDomeSDK-based version (≤ 3.8.x)? See the [migration guide](MIGRATION.md).
 
+## Requirements
+
+- **iOS 15.0+** — the package's minimum deployment target.
+- **Xcode 26.4+** — the first version to support Swift Package Manager traits (required to select the Apollo major; see [Choosing your Apollo iOS major](#choosing-your-apollo-ios-major-v1-or-v2)).
+- **Swift Package Manager** — the supported integration method.
+- **Apollo iOS v1 (1.x) _or_ v2 (2.x)** — pick one and enable the matching trait (`ApolloV1` is enabled by default).
+- A **DataDome client-side key** — set in your app's Info.plist under the `DataDome` dictionary (`ClientSideKey`).
+
 ## Choosing your Apollo iOS major (v1 or v2)
 
 DataDomeApollo supports **both Apollo iOS v1 and v2**, selected at build time with a SwiftPM
 [package trait](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0450-swiftpm-package-traits.md).
 SwiftPM resolves a single Apollo version per build, so **enable the trait that matches the Apollo
 major your app depends on** (a mismatch is a compile error, not a silent failure).
-
-Requires a **Swift 6.1+ toolchain** (Xcode 16.3+), since traits are a Swift 6.1 feature.
 
 **Apollo v1 (default — no change needed):**
 

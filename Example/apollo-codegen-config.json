@@ -1,8 +1,5 @@
 {
   "schemaNamespace" : "ApolloSchema",
-  "options": {
-      "cocoapodsCompatibleImportStatements" : false
-  },
   "input" : {
     "operationSearchPaths" : [
       "**/*.graphql"

@@ -30,37 +30,36 @@ final class NetworkManager {
     
     private(set) lazy var apollo: ApolloClient = {
         // Create your own store needed to init the DataDomeInterceptor provider
-        let cache = InMemoryNormalizedCache()
-        let store = ApolloStore(cache: cache)
-        
-        // Create the DataDome Interceptor Provider
-        let provider = DataDomeInterceptorProvider(store: store, dataDome: dataDome)
-        
+        let store = ApolloStore(cache: InMemoryNormalizedCache())
+
+        // Create the DataDome Interceptor Provider (Apollo v2: a GraphQLInterceptor provider)
+        let provider = DataDomeInterceptorProvider(dataDome: dataDome)
+
         // Create your GraphQL URL
         let wpJsonEndpoint = "https://datadome.co/wp-json"
-        
+
         guard let url = URL(string: wpJsonEndpoint) else {
             fatalError("Unable to create url https://datadome.co/wp-json")
         }
-        
-        let requestChainTransport = RequestChainNetworkTransport(interceptorProvider: provider,
+
+        let requestChainTransport = RequestChainNetworkTransport(urlSession: URLSession(configuration: .default),
+                                                                 interceptorProvider: provider,
+                                                                 store: store,
                                                                  endpointURL: url,
                                                                  additionalHeaders: headers,
                                                                  useGETForQueries: true)
-        
+
         // Create the client with the request chain transport
         return ApolloClient(networkTransport: requestChainTransport,
-                            store: store)   
+                            store: store)
     }()
-        
-    private init() {
-        
-    }
-    
-    func protectedData(from url: URL, withId id: Int) async throws -> Data {
-        apollo.fetch(query: ApolloSchema.LaunchListQuery()) { result in
 
-        }
+    private init() {
+
+    }
+
+    func protectedData(from url: URL, withId id: Int) async throws -> Data {
+        _ = try await apollo.fetch(query: ApolloSchema.LaunchListQuery())
 
         return "lksjdfg".data(using: .utf8)!
     }
