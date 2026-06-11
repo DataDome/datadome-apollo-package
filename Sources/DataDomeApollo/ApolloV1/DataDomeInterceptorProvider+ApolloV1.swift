@@ -1,8 +1,12 @@
 //
-//  NetworkInterceptorProvider.swift
+//  DataDomeInterceptorProvider+ApolloV1.swift
 //  DataDomeApollo
 //
 //  Created by Mohamed Hajlaoui on 31/03/2021.
+//
+//  Defines `DataDomeInterceptorProvider` for Apollo iOS v1. The filename is qualified `+ApolloV1`
+//  because SwiftPM requires unique source file names within a target — the v2 definition of the same
+//  type lives in `ApolloV2/DataDomeInterceptorProvider+ApolloV2.swift`.
 //
 
 #if ApolloV1
@@ -35,14 +39,14 @@ public final class DataDomeInterceptorProvider: DefaultInterceptorProvider {
         super.init(client: client, store: store)
     }
 
-    /// Provides Apollo's default interceptors with `DataDomeResponseInterceptor` inserted immediately
+    /// Provides Apollo's default interceptors with `DataDomeInterceptor` inserted immediately
     /// after `NetworkFetchInterceptor` (and before `ResponseCodeInterceptor`), so it inspects the raw
     /// HTTP response — e.g. a DataDome challenge — before Apollo turns a non-2xx status into an error.
     public override func interceptors<Operation: GraphQLOperation>(
         for operation: Operation
     ) -> [any ApolloInterceptor] {
         var interceptors = super.interceptors(for: operation)
-        let ddInterceptor = DataDomeResponseInterceptor(dataDome: dataDome)
+        let ddInterceptor = DataDomeInterceptor(dataDome: dataDome)
         if let fetchIndex = interceptors.firstIndex(where: { $0 is NetworkFetchInterceptor }) {
             interceptors.insert(ddInterceptor, at: interceptors.index(after: fetchIndex))
         } else {
