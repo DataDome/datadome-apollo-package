@@ -15,14 +15,14 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apollographql/apollo-ios", from: Version(1, 0, 0)),
-        .package(url: "https://github.com/DataDome/datadome-ios-package", from: Version(3, 8, 5))
+        .package(url: "git@github.com:DataDome/mobile-package-ios-coredatadome.git", from: Version(0, 6, 0))
     ],
     targets: [
         .target(
             name: "DataDomeApollo",
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
-                .product(name: "DataDomeSDK", package: "datadome-ios-package")],
+                .product(name: "CoreDataDome", package: "mobile-package-ios-coredatadome")],
             path: "Sources"
         )
     ],

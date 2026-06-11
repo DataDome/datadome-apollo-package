@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8E7DB1A18EE3418DB45C7736 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3792FA8EEF6138E0A9923F5F /* Pods_Example.framework */; };
+		C7D1A6EE2FDA9E8700783F30 /* DataDomeApollo in Frameworks */ = {isa = PBXBuildFile; productRef = C7D1A6ED2FDA9E8700783F30 /* DataDomeApollo */; };
 		C7F098292CEF97D600C1CC03 /* Query.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F098212CEF97D600C1CC03 /* Query.graphql.swift */; };
 		C7F0982A2CEF97D600C1CC03 /* User.graphql.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F098222CEF97D600C1CC03 /* User.graphql.swift */; };
 		C7F0982B2CEF97D600C1CC03 /* SchemaConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F098242CEF97D600C1CC03 /* SchemaConfiguration.swift */; };
@@ -18,9 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0B48F309CE07986FD8E1C4FE /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		3792FA8EEF6138E0A9923F5F /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C4608BF75CC841F1C1C241D0 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		C7B575142CF62AA900938BB3 /* Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Example-Info.plist"; sourceTree = "<group>"; };
 		C7C383E52CE50B7600F4932D /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7F0981C2CEF97D600C1CC03 /* LaunchListQuery.graphql.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchListQuery.graphql.swift; sourceTree = "<group>"; };
@@ -50,22 +48,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8E7DB1A18EE3418DB45C7736 /* Pods_Example.framework in Frameworks */,
+				C7D1A6EE2FDA9E8700783F30 /* DataDomeApollo in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C35AC05EC76C22AE89E856B9 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				C4608BF75CC841F1C1C241D0 /* Pods-Example.debug.xcconfig */,
-				0B48F309CE07986FD8E1C4FE /* Pods-Example.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		C7C383DC2CE50B7600F4932D = {
 			isa = PBXGroup;
 			children = (
@@ -74,7 +63,6 @@
 				C7C384182CE50BD100F4932D /* Resources */,
 				C7C384152CE50BB400F4932D /* Sources */,
 				C7C383E62CE50B7600F4932D /* Products */,
-				C35AC05EC76C22AE89E856B9 /* Pods */,
 				CAA3962CD68E2E5DAA9F7BCF /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -199,6 +187,9 @@
 			);
 			mainGroup = C7C383DC2CE50B7600F4932D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C7D1A6EC2FDA9E8700783F30 /* XCLocalSwiftPackageReference "../../ios-package-apollo" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C7C383E62CE50B7600F4932D /* Products */;
 			projectDirPath = "";
@@ -228,9 +219,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Example/Pods-Example-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Example/Pods-Example-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -400,7 +395,6 @@
 		};
 		C7C3840A2CE50B7800F4932D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C4608BF75CC841F1C1C241D0 /* Pods-Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -433,7 +427,6 @@
 		};
 		C7C3840B2CE50B7800F4932D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0B48F309CE07986FD8E1C4FE /* Pods-Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -486,6 +479,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		C7D1A6EC2FDA9E8700783F30 /* XCLocalSwiftPackageReference "../../ios-package-apollo" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../ios-package-apollo";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C7D1A6ED2FDA9E8700783F30 /* DataDomeApollo */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DataDomeApollo;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C7C383DD2CE50B7600F4932D /* Project object */;
 }
