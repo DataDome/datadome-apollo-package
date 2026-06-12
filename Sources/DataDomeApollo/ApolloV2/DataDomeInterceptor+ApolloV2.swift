@@ -17,11 +17,11 @@ import CoreDataDome
 /// A DataDome challenge / block arrives as a non-2xx (typically `403`) response, which Apollo's default
 /// `ResponseCodeInterceptor` surfaces as a `ResponseCodeInterceptor.ResponseCodeError` carrying the raw
 /// `HTTPURLResponse` **and** the response body `Data`. This interceptor catches that error via
-/// `mapErrors`; when the response carries a DataDome challenge header (`x-dd-b` / `x-sf-cc-x-dd-b`) it
-/// validates through CoreDataDome — which presents the challenge / block page. On a resolved challenge it
+/// `mapErrors` and hands every non-2xx response to CoreDataDome, which decides whether it is a DataDome
+/// challenge / block and, if so, presents the challenge / block page. On a resolved challenge it
 /// throws `RequestChain.Retry` to re-run the request with the fresh cookie (bounded by Apollo's
-/// `MaxRetryInterceptor`); a hard block throws ``DataDomeError/blocked``. Any other error is rethrown
-/// unchanged.
+/// `MaxRetryInterceptor`); a hard block throws ``DataDomeError/blocked``. Any other error — including a
+/// non-2xx response that is not a DataDome challenge — is rethrown unchanged.
 public struct DataDomeInterceptor: GraphQLInterceptor {
 
     /// The CoreDataDome SDK instance used to validate responses.
@@ -39,10 +39,10 @@ public struct DataDomeInterceptor: GraphQLInterceptor {
     ) async throws -> InterceptorResultStream<Request> {
         let dataDome = self.dataDome
         return await next(request).mapErrors { error in
-            // Act only on a non-2xx response that carries a DataDome challenge header.
+            // Hand every non-2xx response to CoreDataDome, which decides whether it is a DataDome
+            // challenge; the body is read lazily via the provider only if validation needs it.
             guard let codeError = error as? ResponseCodeInterceptor.ResponseCodeError,
-                  let requestURL = codeError.response.url,
-                  Self.isDataDomeChallenge(codeError.response) else {
+                  let requestURL = codeError.response.url else {
                 throw error
             }
 
@@ -53,7 +53,7 @@ public struct DataDomeInterceptor: GraphQLInterceptor {
             }
             let ddResponse = DataDomeResponse(statusCode: codeError.response.statusCode,
                                               headers: headers,
-                                              body: codeError.chunk)
+                                              bodyProvider: { codeError.chunk })
 
             switch await dataDome.validateResponse(ddResponse, requestURL: requestURL) {
             case .needRetry:
@@ -62,19 +62,13 @@ public struct DataDomeInterceptor: GraphQLInterceptor {
             case .blocked:
                 throw DataDomeError.blocked
             case .allowed, .error:
-                // `.allowed` is unreachable here (the challenge header was present); `.error` is a
-                // validation failure. Surface the original networking error unchanged.
+                // `.allowed` means the response was not a DataDome challenge; `.error` is a validation
+                // failure. In both cases surface the original networking error unchanged.
                 throw error
             @unknown default:
                 throw error
             }
         }
-    }
-
-    /// Header-only detection of a DataDome challenge / block response.
-    private static func isDataDomeChallenge(_ response: HTTPURLResponse) -> Bool {
-        response.value(forHTTPHeaderField: "x-dd-b") != nil
-            || response.value(forHTTPHeaderField: "x-sf-cc-x-dd-b") != nil
     }
 }
 #endif
