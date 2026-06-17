@@ -3,16 +3,16 @@
 
 import ApolloAPI
 
-protocol ApolloSchema_SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
+nonisolated protocol ApolloSchema_SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
 where Schema == ApolloSchema.SchemaMetadata {}
 
-protocol ApolloSchema_InlineFragment: ApolloAPI.SelectionSet & ApolloAPI.InlineFragment
+nonisolated protocol ApolloSchema_InlineFragment: ApolloAPI.SelectionSet & ApolloAPI.InlineFragment
 where Schema == ApolloSchema.SchemaMetadata {}
 
-protocol ApolloSchema_MutableSelectionSet: ApolloAPI.MutableRootSelectionSet
+nonisolated protocol ApolloSchema_MutableSelectionSet: ApolloAPI.MutableRootSelectionSet
 where Schema == ApolloSchema.SchemaMetadata {}
 
-protocol ApolloSchema_MutableInlineFragment: ApolloAPI.MutableSelectionSet & ApolloAPI.InlineFragment
+nonisolated protocol ApolloSchema_MutableInlineFragment: ApolloAPI.MutableSelectionSet & ApolloAPI.InlineFragment
 where Schema == ApolloSchema.SchemaMetadata {}
 
 extension ApolloSchema {
@@ -24,7 +24,7 @@ extension ApolloSchema {
 
   typealias MutableInlineFragment = ApolloSchema_MutableInlineFragment
 
-  enum SchemaMetadata: ApolloAPI.SchemaMetadata {
+  nonisolated enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     static let configuration: any ApolloAPI.SchemaConfiguration.Type = SchemaConfiguration.self
 
     private static let objectTypeMap: [String: ApolloAPI.Object] = [
@@ -37,8 +37,8 @@ extension ApolloSchema {
     }
   }
 
-  enum Objects {}
-  enum Interfaces {}
-  enum Unions {}
+  nonisolated enum Objects {}
+  nonisolated enum Interfaces {}
+  nonisolated enum Unions {}
 
 }

@@ -1,17 +1,22 @@
 //
-//  DataDomeResponseInterceptor.swift
+//  DataDomeInterceptor+ApolloV1.swift
 //  DataDomeApollo
 //
 //  Created by Mohamed Hajlaoui on 31/03/2021.
 //
+//  Defines `DataDomeInterceptor` for Apollo iOS v1. The filename is qualified `+ApolloV1` because
+//  SwiftPM requires unique source file names within a target — the v2 definition of the same type
+//  lives in `ApolloV2/DataDomeInterceptor+ApolloV2.swift`.
+//
 
+#if ApolloV1
 import Foundation
 import Apollo
 import ApolloAPI
 import CoreDataDome
 
 /// The DataDome interceptor. Use this to get your networking pipeline protected.
-public final class DataDomeResponseInterceptor: ApolloInterceptor {
+public final class DataDomeInterceptor: ApolloInterceptor {
     public let id: String = UUID().uuidString
 
     /// The CoreDataDome SDK instance used to validate responses.
@@ -44,7 +49,7 @@ public final class DataDomeResponseInterceptor: ApolloInterceptor {
             } ?? [:]
             let ddResponse = DataDomeResponse(statusCode: httpResponse?.statusCode ?? 0,
                                               headers: headers,
-                                              body: response?.rawData)
+                                              bodyProvider: { response?.rawData })
 
             Task {
                 switch await dataDome.validateResponse(ddResponse, requestURL: request.graphQLEndpoint) {
@@ -66,3 +71,4 @@ public final class DataDomeResponseInterceptor: ApolloInterceptor {
             }
         }
 }
+#endif
