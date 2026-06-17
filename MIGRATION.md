@@ -1,6 +1,6 @@
-# Migrating to DataDomeApollo 4.x (CoreDataDome)
+# Migrating to DataDomeApollo 4.0.0 (CoreDataDome)
 
-DataDomeApollo **4.x** replaces the legacy **DataDomeSDK** dependency with the new modular
+DataDomeApollo **4.0.0** replaces the legacy **DataDomeSDK** dependency with the new modular
 **CoreDataDome** SDK. This is a breaking release: response validation now runs through CoreDataDome's
 `DataDome` instance, and the challenge / blocked page is presented by the SDK itself. This guide
 covers upgrading an existing integration from 3.8.x or earlier.
@@ -11,12 +11,14 @@ covers upgrading an existing integration from 3.8.x or earlier.
 - See the [README requirements](README.md#requirements) for the toolchain (Xcode version) and Swift
   Package Manager setup.
 - DataDomeSDK integrations run on **Apollo iOS v1**, which is the default (`ApolloV1`) trait, so the
-  steps below apply as-is. To run on Apollo v2 instead, see
+  steps below apply as-is. On Apollo v2 the integration point is different — DataDome plugs in at the
+  transport (`DataDomeURLSession`) rather than via an interceptor provider; see
+  [Apollo v2](#apollo-v2) below and
   [Choosing your Apollo iOS major](README.md#choosing-your-apollo-ios-major-v1-or-v2).
 
 ## At a glance
 
-| Area | Before (≤ 3.8.x · DataDomeSDK) | After (4.x · CoreDataDome) |
+| Area | Before (≤ 3.8.x · DataDomeSDK) | After (4.0.0 · CoreDataDome) |
 |---|---|---|
 | Import | `import DataDomeSDK` | `import CoreDataDome` |
 | Client key (Info.plist) | `DataDomeKey` (String) | `DataDome` → `ClientSideKey` (String) |
@@ -26,9 +28,12 @@ covers upgrading an existing integration from 3.8.x or earlier.
 | Challenge / captcha UI | implement `CaptchaDelegate` + pass `ProtectedRequestContext` | handled automatically — nothing to wire up |
 | Min iOS | 12.0 | 15.0 |
 
+> This table covers the **Apollo v1** integration (the default `ApolloV1` trait). On **Apollo v2**,
+> DataDome is wired in at the transport instead of via an interceptor provider — see [Apollo v2](#apollo-v2).
+
 ## 1. Update the package & deployment target
 
-Bump DataDomeApollo to the latest **4.x** and raise your app's minimum deployment target to **iOS 15.0**.
+Bump DataDomeApollo to **4.0.0** and raise your app's minimum deployment target to **iOS 15.0**.
 
 ## 2. Move your client-side key in Info.plist
 
@@ -129,6 +134,33 @@ apollo.fetch(query: MyQuery()) { result in ... }
 - **`ApolloCompletion`** — removed (was an internal helper exposed publicly).
 - **`EventTracker` / `.apollo` integration logging** — removed; there is no equivalent in CoreDataDome.
 
+## Apollo v2
+
+If your app uses **Apollo iOS v2** (enable the `ApolloV2` trait), DataDome integrates at the transport
+rather than via an interceptor provider. Wrap your session in `DataDomeURLSession` and pass it to
+`RequestChainNetworkTransport`:
+
+```swift
+import Apollo
+import DataDomeApollo
+import CoreDataDome
+
+let store = ApolloStore(cache: InMemoryNormalizedCache())
+let dataDome = DataDome(configuration: DataDomeConfiguration(clientKey: "YOUR_CLIENT_SIDE_KEY"))
+
+let transport = RequestChainNetworkTransport(
+    urlSession: DataDomeURLSession(dataDome: dataDome),
+    interceptorProvider: DefaultInterceptorProvider.shared,   // your own / Apollo's default
+    store: store,
+    endpointURL: endpoint
+)
+let apollo = ApolloClient(networkTransport: transport, store: store)
+```
+
+DataDome validates **every** response at the network layer — so a challenge is handled for any status
+code, including `2xx` — and presents the challenge / block page itself. There is no DataDome interceptor
+to register, and the rest of your interceptor chain (including your own interceptors) is untouched.
+
 ## Behavioral changes
 
 - **Challenge presentation** is owned by the SDK (shown in its own window); presentation is not
@@ -136,8 +168,12 @@ apollo.fetch(query: MyQuery()) { result in ... }
 - **Cookies**: the DataDome cookie is stored in the shared `HTTPCookieStorage` and attached to
   subsequent requests automatically. Keep your Apollo `URLSessionClient` on the default configuration
   (the default) so the cookie is sent on retry.
-- **Retries**: a resolved challenge automatically retries the operation, capped by Apollo's
-  `MaxRetryInterceptor` (3 retries).
+- **Retries**:
+  - **Apollo v1** — a resolved challenge retries the operation through Apollo's chain, capped by
+    `MaxRetryInterceptor` (3 retries).
+  - **Apollo v2** — validation and retry happen at the transport (`DataDomeURLSession`): a resolved
+    challenge re-issues the request directly, so retries are **user-driven and not bounded** by
+    `MaxRetryInterceptor`.
 
 ## Troubleshooting
 

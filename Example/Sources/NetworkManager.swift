@@ -29,11 +29,7 @@ final class NetworkManager {
     ]
     
     private(set) lazy var apollo: ApolloClient = {
-        // Create your own store needed to init the DataDomeInterceptor provider
         let store = ApolloStore(cache: InMemoryNormalizedCache())
-
-        // Create the DataDome Interceptor Provider (Apollo v2: a GraphQLInterceptor provider)
-        let provider = DataDomeInterceptorProvider(dataDome: dataDome)
 
         // Create your GraphQL URL
         let wpJsonEndpoint = "https://datadome.co/wp-json"
@@ -42,8 +38,10 @@ final class NetworkManager {
             fatalError("Unable to create url https://datadome.co/wp-json")
         }
 
-        let requestChainTransport = RequestChainNetworkTransport(urlSession: URLSession(configuration: .default),
-                                                                 interceptorProvider: provider,
+        // DataDome validates every response — and retries a resolved challenge — at the network layer by
+        // wrapping the session. The rest of the request chain uses Apollo's default interceptors.
+        let requestChainTransport = RequestChainNetworkTransport(urlSession: DataDomeURLSession(dataDome: dataDome),
+                                                                 interceptorProvider: DefaultInterceptorProvider.shared,
                                                                  store: store,
                                                                  endpointURL: url,
                                                                  additionalHeaders: headers,

@@ -49,7 +49,7 @@ public final class DataDomeInterceptor: ApolloInterceptor {
             } ?? [:]
             let ddResponse = DataDomeResponse(statusCode: httpResponse?.statusCode ?? 0,
                                               headers: headers,
-                                              body: response?.rawData)
+                                              bodyProvider: { response?.rawData })
 
             Task {
                 switch await dataDome.validateResponse(ddResponse, requestURL: request.graphQLEndpoint) {

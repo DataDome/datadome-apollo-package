@@ -7,7 +7,7 @@
 
 #if ApolloV2
 
-/// Errors surfaced by the DataDome Apollo v2 interceptor.
+/// Errors surfaced by the DataDome Apollo v2 integration.
 public enum DataDomeError: Error {
     /// DataDome presented a block page; the request cannot proceed.
     case blocked

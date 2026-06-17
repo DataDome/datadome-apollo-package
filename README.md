@@ -22,7 +22,7 @@ major your app depends on** (a mismatch is a compile error, not a silent failure
 **Apollo v1 (default — no change needed):**
 
 ```swift
-.package(url: "https://github.com/DataDome/datadome-apollo-package", from: "4.1.0")
+.package(url: "https://github.com/DataDome/datadome-apollo-package", from: "4.0.0")
 ```
 
 Setup uses `DataDomeInterceptorProvider(store:dataDome:)` (an Apollo-v1 `InterceptorProvider`).
@@ -30,10 +30,24 @@ Setup uses `DataDomeInterceptorProvider(store:dataDome:)` (an Apollo-v1 `Interce
 **Apollo v2 (opt in to the `ApolloV2` trait, and pin apollo-ios to 2.x in your app):**
 
 ```swift
-.package(url: "https://github.com/DataDome/datadome-apollo-package", from: "4.1.0", traits: ["ApolloV2"])
+.package(url: "https://github.com/DataDome/datadome-apollo-package", from: "4.0.0", traits: ["ApolloV2"])
 ```
 
-Setup uses `DataDomeInterceptorProvider(dataDome:)` (an Apollo-v2 `InterceptorProvider`), passed to
-Apollo v2's `RequestChainNetworkTransport`. The DataDome challenge / block page is handled
-automatically — no extra wiring. (In Xcode, enable the `ApolloV2` trait from the package dependency's
-trait settings instead of the manifest.)
+Setup wraps your session in `DataDomeURLSession(dataDome:)` (an Apollo-v2 `ApolloURLSession`) and
+passes it to Apollo v2's `RequestChainNetworkTransport` — DataDome validates every response at the
+network layer, so a challenge is handled (and the request retried once the user resolves it) for any
+status code, including `2xx`:
+
+```swift
+let transport = RequestChainNetworkTransport(
+    urlSession: DataDomeURLSession(dataDome: dataDome),
+    interceptorProvider: DefaultInterceptorProvider.shared,
+    store: store,
+    endpointURL: endpoint
+)
+let client = ApolloClient(networkTransport: transport, store: store)
+```
+
+The DataDome challenge / block page is presented automatically, and challenge retries are driven by
+the user (not bounded by Apollo's `MaxRetryInterceptor`). (In Xcode, enable the `ApolloV2` trait from
+the package dependency's trait settings instead of the manifest.)
