@@ -9,7 +9,7 @@ import Foundation
 
 import Apollo
 import DataDomeApollo
-import DataDomeSDK
+import CoreDataDome
 
 final class NetworkManager {
     enum Error: Swift.Error {
@@ -17,7 +17,11 @@ final class NetworkManager {
     }
     
     static var shared: NetworkManager = NetworkManager()
-    
+
+    /// The CoreDataDome SDK instance. Reads the client-side key (and optional domain) from the app's
+    /// Info.plist `DataDome` dictionary.
+    private let dataDome = DataDome(configuration: try! DataDomeConfiguration.configurationFromBundle())
+
     private let headers = [
         "Accept": "application/json",
         "User-Agent": "BLOCKUA", // For testing purpose only - This will force a Captcha challenge if no DataDome cookie is present
@@ -29,11 +33,8 @@ final class NetworkManager {
         let cache = InMemoryNormalizedCache()
         let store = ApolloStore(cache: cache)
         
-        // Configure your session client
-        let client = DataDomeURLSessionClient()
-        
         // Create the DataDome Interceptor Provider
-        let provider = DataDomeInterceptorProvider(store: store, client: client)
+        let provider = DataDomeInterceptorProvider(store: store, dataDome: dataDome)
         
         // Create your GraphQL URL
         let wpJsonEndpoint = "https://datadome.co/wp-json"
@@ -56,11 +57,11 @@ final class NetworkManager {
         
     }
     
-    func protectedData(from url: URL, withId id: Int, captchaDelegate: CaptchaDelegate? = nil) async throws -> Data {
-        apollo.fetch(query: ApolloSchema.LaunchListQuery(), context: ProtectedRequestContext(responsePageDelegate: captchaDelegate)) { result in
-            
+    func protectedData(from url: URL, withId id: Int) async throws -> Data {
+        apollo.fetch(query: ApolloSchema.LaunchListQuery()) { result in
+
         }
-                
+
         return "lksjdfg".data(using: .utf8)!
     }
 }

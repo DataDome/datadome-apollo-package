@@ -1,12 +1,12 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-@_exported import Apollo
+@_exported import ApolloAPI
 
 extension ApolloSchema {
   class LaunchListQuery: GraphQLQuery {
     static let operationName: String = "LaunchList"
-    static let operationDocument: Apollo.OperationDocument = .init(
+    static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
         #"query LaunchList { me { __typename id } }"#
       ))
@@ -17,9 +17,12 @@ extension ApolloSchema {
       let __data: DataDict
       init(_dataDict: DataDict) { __data = _dataDict }
 
-      static var __parentType: any Apollo.ParentType { ApolloSchema.Objects.Query }
-      static var __selections: [Apollo.Selection] { [
+      static var __parentType: any ApolloAPI.ParentType { ApolloSchema.Objects.Query }
+      static var __selections: [ApolloAPI.Selection] { [
         .field("me", Me?.self),
+      ] }
+      static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        LaunchListQuery.Data.self
       ] }
 
       var me: Me? { __data["me"] }
@@ -31,10 +34,13 @@ extension ApolloSchema {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any Apollo.ParentType { ApolloSchema.Objects.User }
-        static var __selections: [Apollo.Selection] { [
+        static var __parentType: any ApolloAPI.ParentType { ApolloSchema.Objects.User }
+        static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", ApolloSchema.ID.self),
+        ] }
+        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          LaunchListQuery.Data.Me.self
         ] }
 
         var id: ApolloSchema.ID { __data["id"] }

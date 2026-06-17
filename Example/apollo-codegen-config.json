@@ -1,7 +1,7 @@
 {
   "schemaNamespace" : "ApolloSchema",
   "options": {
-      "cocoapodsCompatibleImportStatements" : true
+      "cocoapodsCompatibleImportStatements" : false
   },
   "input" : {
     "operationSearchPaths" : [
