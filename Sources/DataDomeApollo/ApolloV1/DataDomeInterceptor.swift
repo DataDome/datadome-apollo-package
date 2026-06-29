@@ -2,7 +2,6 @@
 //  DataDomeInterceptor+ApolloV1.swift
 //  DataDomeApollo
 //
-//  Created by Mohamed Hajlaoui on 31/03/2021.
 //
 //  Defines `DataDomeInterceptor` for Apollo iOS v1. The filename is qualified `+ApolloV1` because
 //  SwiftPM requires unique source file names within a target — the v2 definition of the same type
