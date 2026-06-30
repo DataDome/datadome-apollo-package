@@ -1,11 +1,12 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import Apollo
+import ApolloAPI
 
 extension ApolloSchema.Objects {
-  static let User = Apollo.Object(
+  nonisolated static let User = ApolloAPI.Object(
     typename: "User",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

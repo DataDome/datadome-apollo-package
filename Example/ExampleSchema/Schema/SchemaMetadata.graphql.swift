@@ -1,18 +1,18 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import Apollo
+import ApolloAPI
 
-protocol ApolloSchema_SelectionSet: Apollo.SelectionSet & Apollo.RootSelectionSet
+nonisolated protocol ApolloSchema_SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
 where Schema == ApolloSchema.SchemaMetadata {}
 
-protocol ApolloSchema_InlineFragment: Apollo.SelectionSet & Apollo.InlineFragment
+nonisolated protocol ApolloSchema_InlineFragment: ApolloAPI.SelectionSet & ApolloAPI.InlineFragment
 where Schema == ApolloSchema.SchemaMetadata {}
 
-protocol ApolloSchema_MutableSelectionSet: Apollo.MutableRootSelectionSet
+nonisolated protocol ApolloSchema_MutableSelectionSet: ApolloAPI.MutableRootSelectionSet
 where Schema == ApolloSchema.SchemaMetadata {}
 
-protocol ApolloSchema_MutableInlineFragment: Apollo.MutableSelectionSet & Apollo.InlineFragment
+nonisolated protocol ApolloSchema_MutableInlineFragment: ApolloAPI.MutableSelectionSet & ApolloAPI.InlineFragment
 where Schema == ApolloSchema.SchemaMetadata {}
 
 extension ApolloSchema {
@@ -24,20 +24,21 @@ extension ApolloSchema {
 
   typealias MutableInlineFragment = ApolloSchema_MutableInlineFragment
 
-  enum SchemaMetadata: Apollo.SchemaMetadata {
-    static let configuration: any Apollo.SchemaConfiguration.Type = SchemaConfiguration.self
+  nonisolated enum SchemaMetadata: ApolloAPI.SchemaMetadata {
+    static let configuration: any ApolloAPI.SchemaConfiguration.Type = SchemaConfiguration.self
 
-    static func objectType(forTypename typename: String) -> Apollo.Object? {
-      switch typename {
-      case "Query": return ApolloSchema.Objects.Query
-      case "User": return ApolloSchema.Objects.User
-      default: return nil
-      }
+    private static let objectTypeMap: [String: ApolloAPI.Object] = [
+      "Query": ApolloSchema.Objects.Query,
+      "User": ApolloSchema.Objects.User
+    ]
+
+    static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
+      objectTypeMap[typename]
     }
   }
 
-  enum Objects {}
-  enum Interfaces {}
-  enum Unions {}
+  nonisolated enum Objects {}
+  nonisolated enum Interfaces {}
+  nonisolated enum Unions {}
 
 }

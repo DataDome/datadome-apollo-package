@@ -9,7 +9,7 @@ import Foundation
 
 import Apollo
 import DataDomeApollo
-import DataDomeSDK
+import CoreDataDome
 
 final class NetworkManager {
     enum Error: Swift.Error {
@@ -17,7 +17,11 @@ final class NetworkManager {
     }
     
     static var shared: NetworkManager = NetworkManager()
-    
+
+    /// The CoreDataDome SDK instance. Reads the client-side key (and optional domain) from the app's
+    /// Info.plist `DataDome` dictionary.
+    private let dataDome = DataDome(configuration: try! DataDomeConfiguration.configurationFromBundle())
+
     private let headers = [
         "Accept": "application/json",
         "User-Agent": "BLOCKUA", // For testing purpose only - This will force a Captcha challenge if no DataDome cookie is present
@@ -25,42 +29,36 @@ final class NetworkManager {
     ]
     
     private(set) lazy var apollo: ApolloClient = {
-        // Create your own store needed to init the DataDomeInterceptor provider
-        let cache = InMemoryNormalizedCache()
-        let store = ApolloStore(cache: cache)
-        
-        // Configure your session client
-        let client = DataDomeURLSessionClient()
-        
-        // Create the DataDome Interceptor Provider
-        let provider = DataDomeInterceptorProvider(store: store, client: client)
-        
+        let store = ApolloStore(cache: InMemoryNormalizedCache())
+
         // Create your GraphQL URL
         let wpJsonEndpoint = "https://datadome.co/wp-json"
-        
+
         guard let url = URL(string: wpJsonEndpoint) else {
             fatalError("Unable to create url https://datadome.co/wp-json")
         }
-        
-        let requestChainTransport = RequestChainNetworkTransport(interceptorProvider: provider,
+
+        // DataDome validates every response — and retries a resolved challenge — at the network layer by
+        // wrapping the session. The rest of the request chain uses Apollo's default interceptors.
+        let requestChainTransport = RequestChainNetworkTransport(urlSession: DataDomeURLSession(dataDome: dataDome),
+                                                                 interceptorProvider: DefaultInterceptorProvider.shared,
+                                                                 store: store,
                                                                  endpointURL: url,
                                                                  additionalHeaders: headers,
                                                                  useGETForQueries: true)
-        
+
         // Create the client with the request chain transport
         return ApolloClient(networkTransport: requestChainTransport,
-                            store: store)   
+                            store: store)
     }()
-        
+
     private init() {
-        
+
     }
-    
-    func protectedData(from url: URL, withId id: Int, captchaDelegate: CaptchaDelegate? = nil) async throws -> Data {
-        apollo.fetch(query: ApolloSchema.LaunchListQuery(), context: ProtectedRequestContext(responsePageDelegate: captchaDelegate)) { result in
-            
-        }
-                
+
+    func protectedData(from url: URL, withId id: Int) async throws -> Data {
+        _ = try await apollo.fetch(query: ApolloSchema.LaunchListQuery())
+
         return "lksjdfg".data(using: .utf8)!
     }
 }
